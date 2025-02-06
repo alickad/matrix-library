@@ -192,6 +192,7 @@ vector<Matrix> Matrix::PLU_decomp() const{
     int row_now = 0;
     for (int x = 0; x < cols; x++){
         int max_row = row_now;
+        if (row_now >= rows) break;
         for (int y = row_now; y < rows; y++){
             if (abs(U.data[y][x]) > abs(U.data[max_row][x])){
                 max_row = y;
