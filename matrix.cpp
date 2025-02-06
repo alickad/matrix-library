@@ -292,4 +292,23 @@ double Matrix::determinant() const{
     return det;
 }
 
-
+Matrix Matrix::power(int p){
+    if (rows != cols) 
+        throw runtime_error("The matrix must be square to be multiplied by itself");
+    Matrix result(rows, cols);
+    for (int i = 0; i < rows; i++){
+        result.data[i][i] = 1;
+    }
+    Matrix A(rows, cols);
+    A.data = data;
+    if (p < 0){
+        A = A.inverse();
+        p = -p;
+    }
+    for (int i = 0; (1 << i) <= p; i++){
+        if ((p >> i) & 1)
+            result = result.mult(A);
+        A = A.mult(A);
+    }
+    return result;
+}

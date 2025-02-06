@@ -22,6 +22,7 @@ public:
     std::vector<Matrix> PLU_decomp() const;
     Matrix inverse() const;
     double determinant() const;
+    Matrix power(int p);
 };
 
 

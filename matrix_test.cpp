@@ -22,11 +22,10 @@ int main(){
         }
     }
     
-    // test determinant
+    // test power
     a.display();
-    cout << a.determinant() << '\n';
-
-
-
-    
+    cout << '\n';
+    (a.power(-1)).display();
+    cout << '\n';
+    (a.inverse()).display();
 }

@@ -39,6 +39,7 @@ The class contains data about your matrix, as well as functions you can use on i
 |PLU_decomp()	    |   Performs PLU decomposition                      |
 |determinant()      |	Computes the determinant using PLU decomposition|
 |inverse()	        |   Computes the inverse if the matrix is invertible|
+|power(int p)       |   Computes the matrix raised to power p           |
 
 ### code example
 
@@ -71,11 +72,13 @@ int main() {
 
 **transpose** just transpose in $O(n^2)$.
 
-**mult** for smaller matrices, $O(n^3)$$. For big matrices we use Strassen`s algorithm, which gives us $$~O(n^2.81)$$.
+**mult** for smaller matrices, $O(n^3)$. For big matrices we use Strassen`s algorithm, which gives us $~O(n^{2.81})$.
 
 **PLU_decomp** calculates 3 matrices, P, L and U. Their product is the given matrix. P is a permutation matrix, L is a lower triangular matrix and U is a rectangular matrix with all non-zero values on or above diagonal. We compute this using Gaussian elimination with partial pivoting. That gives us $O(n^3)$ time complexity for a $n \times n$ matrix.
 
 **determinant** first calculate the PLU decomposition. Then calculate the determinants of the 3 matrices and multiply them. That gives us $O(n^3)$ time complexity.
 
 **inverse** using Gauss-Jordan elimination with partial pivoting in $O(n^3)$.
+
+**power** we do it with fast exponentiation, in $O(\log p * n^{2.81})$
 
