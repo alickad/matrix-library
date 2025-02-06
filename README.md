@@ -1,7 +1,9 @@
 # Matrix-library
+
 A simple library with matrix operations in C++.
 
 ## Setup
+
 1. Clone this repository or download the files:
 ```
 git clone <your-repo-url>
@@ -16,12 +18,20 @@ g++ -o matrix_program matrix.cpp main.cpp
 Now to use the library, simply include "matrix.h" in your file.
 
 ## Matrix class
+
 The class contains data about your matrix, as well as functions you can use on it.
+
 ### data
-| rows  | number of rows of matrix             |
-| cols  | number of columns of matrix          |
-| data  | the values in a 2D vector of doubles |
+
+| name  | it represents                         |
+| ----  | ------------------------------------- |
+| rows  | number of rows of matrix              |
+| cols  | number of columns of matrix           |
+| data  | the values in a 2D vector of doubles  |
 ### functions
+
+|name               |	what it does                                    |
+| ----------------- |	----------------------------------------------- |
 |add(Matrix other)  |	Returns sum of two matrices                     |
 |sub(Matrix other)  |	Returns difference of two matrices              |
 |mult(Matrix other)	|   Returns product of two matrices                 |
@@ -31,6 +41,7 @@ The class contains data about your matrix, as well as functions you can use on i
 |inverse()	        |   Computes the inverse if the matrix is invertible|
 
 ### code example
+
 ```c++
 #include "matrix.h"
 #include <iostream>
@@ -55,10 +66,16 @@ int main() {
 ```
 
 ## Used algorithms and their asymptotic complexity
+
 **add, sub** simply add or subtract numbers from matrices one by one. For Matrix $n \times n$ this gives $O(n^2)$ complexity.
+
 **transpose** just transpose in $O(n^2)$.
+
 **mult** for smaller matrices, $O(n^3)$$. For big matrices we use Strassen`s algorithm, which gives us $$~O(n^2.81)$$.
+
 **PLU_decomp** calculates 3 matrices, P, L and U. Their product is the given matrix. P is a permutation matrix, L is a lower triangular matrix and U is a rectangular matrix with all non-zero values on or above diagonal. We compute this using Gaussian elimination with partial pivoting. That gives us $O(n^3)$ time complexity for a $n \times n$ matrix.
+
 **determinant** first calculate the PLU decomposition. Then calculate the determinants of the 3 matrices and multiply them. That gives us $O(n^3)$ time complexity.
+
 **inverse** using Gauss-Jordan elimination with partial pivoting in $O(n^3)$.
 
