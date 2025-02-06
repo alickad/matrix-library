@@ -247,7 +247,7 @@ Matrix Matrix::inverse() const{
         for (int y = 0; y < rows; y++){
             if (y == x) continue;
             double pomer = A.data[y][x];
-            for (int xx = x; xx < cols; xx++){
+            for (int xx = 0; xx < cols; xx++){
                 A.data[y][xx] -= A.data[x][xx] * pomer;
                 invA.data[y][xx] -= invA.data[x][xx] * pomer;
             }

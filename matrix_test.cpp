@@ -32,6 +32,6 @@ int main(){
     }
 
     cout << '\n';
-    Matrix x = a.inverse();
+    Matrix x = c.inverse();
     x.display();
 }
