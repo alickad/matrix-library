@@ -80,5 +80,5 @@ int main() {
 
 **inverse** using Gauss-Jordan elimination with partial pivoting in $O(n^3)$.
 
-**power** we do it with fast exponentiation, in $O(\log p * n^{2.81})$
+**power** we do it with fast exponentiation, in $O(\log{}{p} \times n^{2.81})$
 
