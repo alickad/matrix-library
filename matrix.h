@@ -18,11 +18,11 @@ public:
     Matrix sub(const Matrix& other) const;
     Matrix mult(const Matrix& other) const;
     Matrix transpose() const;
-    Matrix P_inverse() const;
     void switch_rows(int i, int j);
     void switch_cols(int i, int j);
     std::vector<Matrix> PLU_decomp() const;
     Matrix inverse() const;
+    double determinant() const;
 };
 
 

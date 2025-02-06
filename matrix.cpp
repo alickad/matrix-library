@@ -147,18 +147,6 @@ Matrix Matrix::transpose() const{
     return result;
 }
 
-Matrix Matrix::P_inverse() const{
-    Matrix Pinv(rows, cols);
-    for (int y = 0; y < rows; y++){
-        for (int x = 0; x < cols; x++){
-            if (data[y][x] == 1){
-                Pinv.data[x][y] = 1;
-            }
-        }
-    }
-    return Pinv;
-}
-
 void Matrix::display() const{
     for (int y = 0; y < rows; y++){
         for (int x = 0; x < cols; x++){
@@ -257,4 +245,47 @@ Matrix Matrix::inverse() const{
     }
 
     return invA;
+}
+
+double Matrix::determinant() const{
+    if (rows != cols)
+        throw runtime_error("Determinant is defined only on square matrices");
+    vector<Matrix> PLU = PLU_decomp();
+    Matrix P = PLU[0];
+    Matrix L = PLU[1];
+    Matrix U = PLU[2];
+
+    double det = 1;
+
+    // first determinant of P (using number of cycles of permutation)
+    vector<int> perm(rows,0);
+    for (int y = 0; y < rows; y++){
+        for (int x = 0; x < cols; x++){
+            if (P.data[y][x]){
+                perm[x] = y;
+                break;
+            }
+        }
+    }
+    vector<bool> visited(rows, false);
+    for (int i = 0; i < rows; i++){
+        if (visited[i]) continue;
+        det *= -1;
+        visited[i] = true;
+        int j = perm[i];
+        while (!visited[j]){
+            visited[j] = true;
+            j = perm[j];
+        }
+    }
+    if (rows % 2 == 1) det *= -1;
+
+    // multiply by determinant of L
+    for (int i = 0; i<rows; i++){
+        det *= L.data[i][i];
+    }
+    // multiply by determinant of U
+    for (int i = 0; i<rows; i++){
+        det *= U.data[i][i];
+    }
 }

@@ -22,17 +22,9 @@ int main(){
         }
     }
     
-    // test PLU decomp
-    vector<Matrix> PLU_test = a.PLU_decomp();
+    // test determinant
     a.display();
-    cout << '\n';
-    PLU_test[0].display();
-    cout << '\n';
-    PLU_test[1].display();
-    cout << '\n';
-    PLU_test[2].display();
-    cout << '\n' << "a ich sucin je \n";
-    ((PLU_test[0].mult(PLU_test[1])).mult(PLU_test[2])).display();
+    cout << a.determinant() << '\n';
 
 
 
