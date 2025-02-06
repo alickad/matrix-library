@@ -6,7 +6,7 @@ A simple library with matrix operations in C++.
 
 1. Clone this repository or download the files:
 ```
-git clone <your-repo-url>
+git clone <https://github.com/alickad/matrix-library/>
 ```
 2. Ensure you have a C++ compiler (e.g., g++ for GCC).
 3. Compile the project using:
