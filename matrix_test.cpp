@@ -30,4 +30,8 @@ int main(){
         }
         cout << '\n';
     }
+
+    cout << '\n';
+    Matrix x = a.inverse();
+    x.display();
 }

@@ -191,15 +191,17 @@ vector<Matrix> Matrix::PLU_decomp() const{
     U.data = data;
     int row_now = 0;
     for (int x = 0; x < cols; x++){
+        int max_row = row_now;
         for (int y = row_now; y < rows; y++){
-            if (U.data[y][x] != 0){
-                U.switch_rows(row_now, y);
-                L.switch_rows(row_now, y);
-                L.switch_cols(row_now, y);
-                P.switch_cols(row_now, y);
-                break;
+            if (abs(U.data[y][x]) > abs(U.data[max_row][x])){
+                max_row = y;
             }
         }
+        if (U.data[max_row][x] == 0) continue;
+        U.switch_rows(row_now, max_row);
+        L.switch_rows(row_now, max_row);
+        L.switch_cols(row_now, max_row);
+        P.switch_cols(row_now, max_row);
         for (int y = row_now + 1; y < rows; y++){
             double pomer = U.data[y][x] / U.data[row_now][x];
             U.data[y][x] = 0;
@@ -233,6 +235,7 @@ Matrix Matrix::inverse() const{
             throw std::runtime_error("Matrix is not invertible.");
         A.switch_rows(x, maxi);
         invA.switch_rows(x, maxi);
+        // divide the row by pivot value
         for (int xx = x+1; xx<cols; xx++){
             A.data[x][xx] /= A.data[x][x];
         }
@@ -240,7 +243,7 @@ Matrix Matrix::inverse() const{
             invA.data[x][xx] /= A.data[x][x];
         }
         A.data[x][x] = 1;
-
+        // make the column except pivot zero 
         for (int y = 0; y < rows; y++){
             if (y == x) continue;
             double pomer = A.data[y][x];
@@ -249,7 +252,8 @@ Matrix Matrix::inverse() const{
                 invA.data[y][xx] -= invA.data[x][xx] * pomer;
             }
             A.data[y][x] = 0;
-
         }        
     }
+
+    return invA;
 }
