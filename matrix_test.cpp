@@ -21,17 +21,20 @@ int main(){
             b.data[kk][nn] = double(rand() % 10);
         }
     }
-    Matrix c = a.mult(b);
-    Matrix d = a.mult_slow(b);
-    for (int i = 0; i<c.rows; i++){
-        for (int j = 0; j<c.cols; j++){
-            cout << c.data[i][j] << " ";
-            if (c.data[i][j] != d.data[i][j]) cout << "!!!!!!!!!!!!!!!!!!!!";
-        }
-        cout << '\n';
-    }
-
+    
+    // test PLU decomp
+    vector<Matrix> PLU_test = a.PLU_decomp();
+    a.display();
     cout << '\n';
-    Matrix x = c.inverse();
-    x.display();
+    PLU_test[0].display();
+    cout << '\n';
+    PLU_test[1].display();
+    cout << '\n';
+    PLU_test[2].display();
+    cout << '\n' << "a ich sucin je \n";
+    ((PLU_test[0].mult(PLU_test[1])).mult(PLU_test[2])).display();
+
+
+
+    
 }
