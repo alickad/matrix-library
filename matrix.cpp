@@ -288,4 +288,8 @@ double Matrix::determinant() const{
     for (int i = 0; i<rows; i++){
         det *= U.data[i][i];
     }
+    
+    return det;
 }
+
+
