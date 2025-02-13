@@ -13,12 +13,12 @@ int main(){
 
     for (int mm = 0; mm<m; mm++){
         for (int kk = 0; kk<k; kk++){
-            a.data[mm][kk] = double(rand() % 10);
+            a.at(mm,kk) = double(rand() % 10);
         }
     }
     for (int kk = 0; kk<k; kk++){
         for (int nn = 0; nn<n; nn++){
-            b.data[kk][nn] = double(rand() % 10);
+            b.at(kk,nn) = double(rand() % 10);
         }
     }
     

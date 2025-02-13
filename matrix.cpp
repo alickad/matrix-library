@@ -5,7 +5,18 @@
 #include <iostream>
 using namespace std;
 
-Matrix::Matrix(int r, int c) : rows(r), cols(c), data(r, std::vector<double>(c, 0.0)) {}
+Matrix::Matrix(int r, int c) : rows(r), cols(c), data(r * c, 0.0) {}
+
+double& Matrix::at(int i, int j){
+    if (i >= rows || i < 0 || j < 0 || j >= cols)
+        throw std::runtime_error("Indexing in matrix out of range");
+    return data[i*cols + j];
+}
+const double& Matrix::at(int i, int j) const {
+    if (i >= rows || i < 0 || j < 0 || j >= cols)
+        throw std::runtime_error("Indexing in matrix out of range");
+    return data[i * cols + j];  
+}
 
 Matrix Matrix::add(const Matrix& other) const{
     if (rows != other.rows || cols != other.cols)
@@ -14,7 +25,7 @@ Matrix Matrix::add(const Matrix& other) const{
     Matrix result(rows, cols);
     for (int i = 0; i < rows; i++)
         for (int j = 0; j < cols; j++)
-            result.data[i][j] = data[i][j] + other.data[i][j];
+            result.at(i,j) = at(i,j) + other.at(i,j);
 
     return result;
 }
@@ -26,7 +37,7 @@ Matrix Matrix::sub(const Matrix& other) const{
     Matrix result(rows, cols);
     for (int i = 0; i < rows; i++)
         for (int j = 0; j < cols; j++)
-            result.data[i][j] = data[i][j] - other.data[i][j];
+            result.at(i,j) = at(i,j) - other.at(i,j);
 
     return result;
 }
@@ -38,9 +49,9 @@ Matrix Matrix::mult_slow(const Matrix& other) const{
     Matrix result(rows, other.cols);
     for (int m = 0; m<rows; m++){
         for (int n = 0; n<other.cols; n++){
-            result.data[m][n] = 0;
+            result.at(m,n) = 0;
             for (int k = 0; k<cols; k++){
-                result.data[m][n] += data[m][k] * other.data[k][n];
+                result.at(m,n) += at(m,k) * other.at(k,n);
             }
         }
     }
@@ -56,7 +67,7 @@ Matrix Matrix::mult(const Matrix& other) const{ //A, B
         throw std::runtime_error("Matrix dimensions must match for multiplication.");
 
     if (M0 < 30 && K0<30 && N0<30){
-        return mult_slow(other);            ///////////////////////////////////////////
+        return mult_slow(other);          
     }
 
     int M = M0 + M0%2;
@@ -67,21 +78,20 @@ Matrix Matrix::mult(const Matrix& other) const{ //A, B
     Matrix A12(M/2, K/2);
     Matrix A21(M/2, K/2);
     Matrix A22(M/2, K/2);
-//TODO check if initializes to zero
 
     for (int m = 0; m<M0; m++){
         for (int k = 0; k<K0; k++){
             if (m<M/2 && k<K/2){
-                A11.data[m][k] = data[m][k];
+                A11.at(m,k) = at(m,k);
             }
             else if (m<M/2){
-                A12.data[m][k-K/2] = data[m][k];
+                A12.at(m,k-K/2) = at(m, k);
             }
             else if (k<K/2){
-                A21.data[m-M/2][k] = data[m][k];
+                A21.at(m-M/2, k) = at(m, k);
             }
             else{
-                A22.data[m-M/2][k-K/2] = data[m][k];
+                A22.at(m-M/2, k-K/2) = at(m, k);
             }
         }
     }
@@ -94,16 +104,16 @@ Matrix Matrix::mult(const Matrix& other) const{ //A, B
     for (int k = 0; k<K0; k++){
         for (int n = 0; n<N0; n++){
             if (k<K/2 && n<N/2){
-                B11.data[k][n] = other.data[k][n];
+                B11.at(k, n) = other.at(k, n);
             }
             else if (k<K/2){
-                B12.data[k][n-N/2] = other.data[k][n];
+                B12.at(k, n-N/2) = other.at(k, n);
             }
             else if (n<N/2){
-                B21.data[k-K/2][n] = other.data[k][n];
+                B21.at(k-K/2, n) = other.at(k, n);
             }
             else{
-                B22.data[k-K/2][n-N/2] = other.data[k][n];
+                B22.at(k-K/2, n-N/2) = other.at(k, n);
             }
         }
     }
@@ -120,16 +130,16 @@ Matrix Matrix::mult(const Matrix& other) const{ //A, B
     for (int m = 0; m<M0; m++){
         for (int n = 0; n<N0; n++){
             if (m < M/2 && n<N/2){
-                C.data[m][n] = p1.data[m][n] + p4.data[m][n] - p5.data[m][n] + p7.data[m][n];
+                C.at(m, n) = p1.at(m, n) + p4.at(m, n) - p5.at(m, n) + p7.at(m, n);
             }
             else if (n < N/2){
-                C.data[m][n] = p2.data[m-M/2][n] + p4.data[m-M/2][n];
+                C.at(m, n) = p2.at(m-M/2, n) + p4.at(m-M/2, n);
             }
             else if (m < M/2){
-                C.data[m][n] = p3.data[m][n-N/2] + p5.data[m][n-N/2];
+                C.at(m, n) = p3.at(m, n-N/2) + p5.at(m, n-N/2);
             }
             else{
-                C.data[m][n] = p1.data[m-M/2][n-N/2] + p3.data[m-M/2][n-N/2] - p2.data[m-M/2][n-N/2] - p6.data[m-M/2][n-N/2];
+                C.at(m, n) = p1.at(m-M/2, n-N/2) + p3.at(m-M/2, n-N/2) - p2.at(m-M/2, n-N/2) - p6.at(m-M/2, n-N/2);
             }
         }
     }
@@ -141,7 +151,7 @@ Matrix Matrix::transpose() const{
     Matrix result(cols, rows);
     for (int y = 0; y<rows; y++){
         for (int x = 0; x < cols; x++){
-            result.data[x][y] = data[y][x];
+            result.at(x, y) = at(y, x);
         }
     }
     return result;
@@ -150,7 +160,7 @@ Matrix Matrix::transpose() const{
 void Matrix::display() const{
     for (int y = 0; y < rows; y++){
         for (int x = 0; x < cols; x++){
-            cout << data[y][x];
+            cout << at(y, x);
             if (x < cols-1) cout << " ";
             else cout << '\n';
         }
@@ -159,22 +169,22 @@ void Matrix::display() const{
 
 void Matrix::switch_rows(int i, int j){
     for (int y = 0; y < cols; y++){
-        swap(data[i][y], data[j][y]);
+        swap(at(i, y), at(j, y));
     }
 }
 void Matrix::switch_cols(int i, int j){
     for (int x = 0; x < rows; x++){
-        swap(data[x][i], data[x][j]);
+        swap(at(x, i), at(x, j));
     }
 }
 
 vector<Matrix> Matrix::PLU_decomp() const{
     Matrix P(rows,rows);
     for (int i = 0; i < rows; i++)
-        P.data[i][i] = 1;
+        P.at(i, i) = 1;
     Matrix L(rows,rows);
     for (int i = 0; i < rows; i++)
-        L.data[i][i] = 1;
+        L.at(i, i) = 1;
     Matrix U(rows,cols);
     U.data = data;
     int row_now = 0;
@@ -182,22 +192,22 @@ vector<Matrix> Matrix::PLU_decomp() const{
         int max_row = row_now;
         if (row_now >= rows) break;
         for (int y = row_now; y < rows; y++){
-            if (abs(U.data[y][x]) > abs(U.data[max_row][x])){
+            if (abs(U.at(y, x)) > abs(U.at(max_row, x))){
                 max_row = y;
             }
         }
-        if (U.data[max_row][x] == 0) continue;
+        if (U.at(max_row, x) == 0) continue;
         U.switch_rows(row_now, max_row);
         L.switch_rows(row_now, max_row);
         L.switch_cols(row_now, max_row);
         P.switch_cols(row_now, max_row);
         for (int y = row_now + 1; y < rows; y++){
-            double pomer = U.data[y][x] / U.data[row_now][x];
-            U.data[y][x] = 0;
+            double pomer = U.at(y, x) / U.at(row_now, x);
+            U.at(y, x) = 0;
             for (int xx = x+1; xx<cols; xx++){
-                U.data[y][xx] -= U.data[row_now][xx] * pomer;
+                U.at(y, xx) -= U.at(row_now, xx) * pomer;
             }
-            L.data[y][x] = pomer;
+            L.at(y,x) = pomer;
         }
         row_now++;
     }
@@ -212,35 +222,35 @@ Matrix Matrix::inverse() const{
     A.data = data;
     Matrix invA(rows, cols);
     for (int y = 0; y < rows; y++){
-        invA.data[y][y] = 1;
+        invA.at(y,y) = 1;
     }
     for (int x = 0; x < cols; x++){
         int maxi = x;
         for (int y = x; y < rows; y++){
-            if (abs(A.data[y][x]) > abs(A.data[maxi][x]))
+            if (abs(A.at(y,x)) > abs(A.at(maxi,x)))
                 maxi = y;
         }
-        if (A.data[maxi][x] == 0)
+        if (A.at(maxi, x) == 0)
             throw std::runtime_error("Matrix is not invertible.");
         A.switch_rows(x, maxi);
         invA.switch_rows(x, maxi);
         // divide the row by pivot value
         for (int xx = x+1; xx<cols; xx++){
-            A.data[x][xx] /= A.data[x][x];
+            A.at(x, xx) /= A.at(x, x);
         }
         for (int xx = 0; xx<cols; xx++){
-            invA.data[x][xx] /= A.data[x][x];
+            invA.at(x,xx) /= A.at(x,x);
         }
-        A.data[x][x] = 1;
+        A.at(x,x) = 1;
         // make the column except pivot zero 
         for (int y = 0; y < rows; y++){
             if (y == x) continue;
-            double pomer = A.data[y][x];
+            double pomer = A.at(y,x);
             for (int xx = 0; xx < cols; xx++){
-                A.data[y][xx] -= A.data[x][xx] * pomer;
-                invA.data[y][xx] -= invA.data[x][xx] * pomer;
+                A.at(y,xx) -= A.at(x,xx) * pomer;
+                invA.at(y,xx) -= invA.at(x,xx) * pomer;
             }
-            A.data[y][x] = 0;
+            A.at(y,x) = 0;
         }        
     }
 
@@ -261,7 +271,7 @@ double Matrix::determinant() const{
     vector<int> perm(rows,0);
     for (int y = 0; y < rows; y++){
         for (int x = 0; x < cols; x++){
-            if (P.data[y][x]){
+            if (P.at(y,x)){
                 perm[x] = y;
                 break;
             }
@@ -282,11 +292,11 @@ double Matrix::determinant() const{
 
     // multiply by determinant of L
     for (int i = 0; i<rows; i++){
-        det *= L.data[i][i];
+        det *= L.at(i,i);
     }
     // multiply by determinant of U
     for (int i = 0; i<rows; i++){
-        det *= U.data[i][i];
+        det *= U.at(i,i);
     }
     
     return det;
@@ -297,7 +307,7 @@ Matrix Matrix::power(int p){
         throw runtime_error("The matrix must be square to be multiplied by itself");
     Matrix result(rows, cols);
     for (int i = 0; i < rows; i++){
-        result.data[i][i] = 1;
+        result.at(i,i) = 1;
     }
     Matrix A(rows, cols);
     A.data = data;
