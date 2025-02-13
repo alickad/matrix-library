@@ -19,27 +19,28 @@ Now to use the library, simply include "matrix.h" in your file.
 
 ## Matrix class
 
-The class contains data about your matrix, as well as functions you can use on it.
+The class contains data about your matrix, as well as methods you can use on it.
 
 ### data
 
-| name  | it represents                         |
-| ----  | ------------------------------------- |
-| rows  | number of rows of matrix              |
-| cols  | number of columns of matrix           |
-| data  | the values in a 2D vector of doubles  |
-### functions
+| name  | it represents                                             |
+| ----  | --------------------------------------------------------- |
+| rows  | number of rows of matrix                                  |
+| cols  | number of columns of matrix                               |
+| data  | the values in a vector of length rows*cols with doubles   |
+### methods
 
-|name               |	what it does                                    |
-| ----------------- |	----------------------------------------------- |
-|add(Matrix other)  |	Returns sum of two matrices                     |
-|sub(Matrix other)  |	Returns difference of two matrices              |
-|mult(Matrix other)	|   Returns product of two matrices                 |
-|transpose()	    |   Returns the transposed matrix                   |
-|PLU_decomp()	    |   Performs PLU decomposition                      |
-|determinant()      |	Computes the determinant using PLU decomposition|
-|inverse()	        |   Computes the inverse if the matrix is invertible|
-|power(int p)       |   Computes the matrix raised to power p           |
+|name               |	what it does                                        |
+| ----------------- |	--------------------------------------------------- |
+|at(int i, int j)   |	Access matrix element on i-th row and j-th column   |
+|add(Matrix other)  |	Returns sum of two matrices                         |
+|sub(Matrix other)  |	Returns difference of two matrices                  |
+|mult(Matrix other)	|   Returns product of two matrices                     |
+|transpose()	    |   Returns the transposed matrix                       |
+|PLU_decomp()	    |   Performs PLU decomposition                          |
+|determinant()      |	Computes the determinant using PLU decomposition    |
+|inverse()	        |   Computes the inverse if the matrix is invertible    |
+|power(int p)       |   Computes the matrix raised to power p               |
 
 ### code example
 
@@ -52,14 +53,20 @@ int main() {
     Matrix B(3, 3);
     
     // Example: Setting values
-    A.data = {{2, 1, 3}, {4, 1, 6}, {7, 8, 9}};
-    B.data = {{3, 4, 1}, {2, 5, 7}, {3, 2, 3}};
+    A.data = {2, 1, 3, 4, 1, 6, 7, 8, 9};
+    for (int i = 0; i < rows; i++){
+        for (int j = 0; j < cols; j++){
+            B.at(i,j) = 5 + i - j;
+        }
+    }
     
     // Compute determinant
     std::cout << "Determinant: " << A.determinant() << std::endl;
 
     // Find the product of A and B
-    std::cout << "Product: " << A.mult(B) << std::endl;
+    std::cout << "Product: ";
+    A.mult(B).display();
+    cout << std::endl;
 
     return 0;
 }
@@ -67,6 +74,8 @@ int main() {
 ```
 
 ## Used algorithms and their asymptotic complexity
+
+**at** accesses element of matrix in constant time. 
 
 **add, sub** simply add or subtract numbers from matrices one by one. For Matrix $n \times n$ this gives $O(n^2)$ complexity.
 
